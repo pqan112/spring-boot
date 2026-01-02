@@ -39,4 +39,10 @@ public class UserController {
     User updateUser(@PathVariable UUID userId, @RequestBody UserUpdateReqDTO req){
         return userService.updateUser(userId, req);
     }
+
+    @DeleteMapping("/{userId}")
+    String deleteUser(@PathVariable UUID userId){
+        userService.deleteUser(userId);
+        return "User has been deleted";
+    }
 }

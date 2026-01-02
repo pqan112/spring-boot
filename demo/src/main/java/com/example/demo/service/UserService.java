@@ -13,4 +13,5 @@ public interface UserService {
     User getUser(UUID userId);
 
     User updateUser(UUID userId, UserUpdateReqDTO req);
+    void deleteUser(UUID userId);
 }
