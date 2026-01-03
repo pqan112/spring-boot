@@ -5,7 +5,9 @@ import com.example.demo.dto.req.UserUpdateReqDTO;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +24,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(UserReqDTO req) {
         User user = new User();
+
+        if(userRepository.existsByUsername(req.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User existed.");
+        }
 
         user.setUsername(req.getUsername());
         user.setFirstName(req.getFirstName());
