@@ -3,6 +3,8 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.req.UserReqDTO;
 import com.example.demo.dto.req.UserUpdateReqDTO;
 import com.example.demo.entity.User;
+import com.example.demo.exception.AppException;
+import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         if(userRepository.existsByUsername(req.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User existed.");
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
 
         user.setUsername(req.getUsername());
