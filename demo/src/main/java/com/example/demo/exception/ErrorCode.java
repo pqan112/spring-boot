@@ -3,7 +3,8 @@ package com.example.demo.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
-    USER_EXISTED("error.user_existed", HttpStatus.CONFLICT);
+    USER_EXISTED("error.user_existed", HttpStatus.CONFLICT),
+    USER_NOT_FOUND("error.user_not_found", HttpStatus.NOT_FOUND);
 
     private String message;
     private HttpStatus httpStatus;
