@@ -2,6 +2,9 @@ package com.example.demo.exception;
 
 import com.example.demo.dto.res.ApiErrorResponse;
 import com.example.demo.dto.res.ApiResponse;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,6 +25,25 @@ public class GlobalExceptionHandler {
                 .message("error.internal_server_error")
                 .build();
         return ResponseEntity.internalServerError().body(res);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
+    public ResponseEntity<ApiResponse<Object>> handleDatabaseExceptions(Exception ex) {
+        Throwable rootCause = NestedExceptionUtils.getRootCause(ex);
+
+        if (rootCause instanceof org.hibernate.TransientPropertyValueException) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT)
+                    .body(ApiResponse.builder()
+                            .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
+                            .message("error.unprocessable_content")
+                            .build());
+        }
+
+        return ResponseEntity.badRequest()
+                .body(ApiResponse.builder()
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .message("database.error")
+                        .build());
     }
 
     @ExceptionHandler(RuntimeException.class)
