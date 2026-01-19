@@ -26,3 +26,12 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  signerKey: "UKuFBBBIjqW9kwVHXb4hhSAlOJru7qiE"
+
+logging:
+  level:
+    org:
+      springframework:
+        security: "DEBUG"

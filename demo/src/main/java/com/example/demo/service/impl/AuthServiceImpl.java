@@ -12,6 +12,7 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ import java.util.Date;
 @Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
-    protected static String SIGNER_KEY = "UKuFBBBIjqW9kwVHXb4hhSAlOJru7qiE";
+    @Value("${jwt.signerKey}")
+    private String signerKey;
     private final AuthRepository authRepository;
     private final AuthenticationMapper authenticationMapper;
     private final PasswordEncoder passwordEncoder;
@@ -78,8 +80,9 @@ public class AuthServiceImpl implements AuthService {
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
         JWSObject jwsObject = new JWSObject(header, payload);
+        log.info("signerKey: {}", signerKey.getBytes());
         try {
-            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            jwsObject.sign(new MACSigner(signerKey.getBytes()));
             return jwsObject.serialize();
         } catch(JOSEException e) {
             log.info("JOSE Exception", e);
