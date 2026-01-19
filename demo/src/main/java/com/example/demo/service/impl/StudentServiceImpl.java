@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.dto.req.student.CreateStudentDTO;
+import com.example.demo.dto.res.student.CreateStudentResponseDTO;
 import com.example.demo.entity.Student;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
@@ -31,9 +32,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student create(CreateStudentDTO dto) {
+    public CreateStudentResponseDTO create(CreateStudentDTO dto) {
         Student student  = studentMapper.toEntity(dto);
-        return studentRepository.save(student);
+        Student savedStudent = studentRepository.save(student);
+        return studentMapper.toResponseDTO(savedStudent);
     }
 
 //    private Student toEntity(CreateStudentDTO dto) {
@@ -56,6 +58,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> findStudentsByName(String name) {
         return studentRepository.findAllByFirstNameContaining(name);
+    }
+
+    @Override
+    public void deleteStudentById(UUID studentId) {
+        studentRepository.deleteById(studentId);
     }
 
 

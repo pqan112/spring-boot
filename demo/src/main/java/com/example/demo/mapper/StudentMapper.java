@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.dto.req.student.CreateStudentDTO;
+import com.example.demo.dto.res.student.CreateStudentResponseDTO;
 import com.example.demo.entity.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,4 +10,6 @@ import org.mapstruct.Mapping;
 public interface StudentMapper {
     @Mapping(target = "school.id", source = "schoolId")
     Student toEntity(CreateStudentDTO dto);
+
+    CreateStudentResponseDTO toResponseDTO(Student student);
 }
