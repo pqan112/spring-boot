@@ -1,11 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.req.UserReqDTO;
 import com.example.demo.dto.req.student.CreateStudentDTO;
 import com.example.demo.dto.res.ApiResponse;
 import com.example.demo.dto.res.student.CreateStudentResponseDTO;
 import com.example.demo.entity.Student;
-import com.example.demo.entity.User;
 import com.example.demo.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

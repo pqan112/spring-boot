@@ -1,67 +1,68 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.req.UserReqDTO;
 import com.example.demo.dto.req.UserUpdateReqDTO;
+import com.example.demo.dto.req.user;
+import com.example.demo.dto.res.user.UserResponse;
 import com.example.demo.entity.User;
+import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
+import com.example.demo.mapper.UserMapper;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.userMapper = userMapper;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
-    public User create(UserReqDTO req) {
-        User user = new User();
-
+    public UserResponse create(user.UserReqDTO req) {
         if(userRepository.existsByUsername(req.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
+        User user = userMapper.toUser(req);
 
-        user.setUsername(req.getUsername());
-        user.setFirstName(req.getFirstName());
-        user.setPassword(req.getPassword());
-        user.setLastName(req.getLastName());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toResponseDTO(savedUser);
+
+    }
+
+    @Override
+    public List<UserResponse> getUsers() {
+        return userRepository.findAll().stream().map(userMapper::toResponseDTO).toList();
+    }
+
+    @Override
+    public UserResponse getUser(UUID userId) {
+        return userMapper.toResponseDTO(getUserById(userId));
+    }
+
+    @Override
+    public UserResponse updateUser(UUID userId, UserUpdateReqDTO req) {
+        User user = getUserById(userId);
         user.setDob(req.getDob());
-
-        return userRepository.save(user);
-
-    }
-
-    @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User getUser(UUID userId) {
-        return getUserById(userId);
-    }
-
-    @Override
-    public User updateUser(UUID userId, UserUpdateReqDTO req) {
-        User user =getUserById(userId);
-
-        if (req.getPassword() != null) user.setPassword(req.getPassword());
-        if (req.getDob() != null) user.setDob(req.getDob());
-        if (req.getLastName() != null) user.setLastName(req.getLastName());
-        if (req.getFirstName() != null) user.setFirstName(req.getFirstName());
-
-        return userRepository.save(user);
-
+        return userMapper.toResponseDTO(userRepository.save(user));
     }
 
     @Override
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getUserById(UUID userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
 
