@@ -12,19 +12,23 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.security.access.AccessDeniedException;
 import java.util.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleGenericException(Exception ex) {
-        ApiResponse<Object> res = ApiResponse.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("error.internal_server_error")
-                .build();
-        return ResponseEntity.internalServerError().body(res);
+    public ResponseEntity<ApiResponse<Object>> handleRuntimeException(Exception ex) {
+        ErrorCode errorCode = ErrorCode.UNCATEGORIZED_EXCEPTION;
+        return ResponseEntity
+                .internalServerError()
+                .body(ApiResponse
+                        .builder()
+                        .status(errorCode.getHttpStatus().value())
+                        .message(errorCode.getMessage())
+                        .build()
+                );
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class, InvalidDataAccessApiUsageException.class})
@@ -32,10 +36,10 @@ public class GlobalExceptionHandler {
         Throwable rootCause = NestedExceptionUtils.getRootCause(ex);
 
         if (rootCause instanceof org.hibernate.TransientPropertyValueException) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT)
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                     .body(ApiResponse.builder()
-                            .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
-                            .message("error.unprocessable_content")
+                            .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                            .message("error.unprocessable_entity")
                             .build());
         }
 
@@ -65,6 +69,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getHttpStatus().value()).body(res);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ApiResponse<Object>> handleAccessDeniedException(AccessDeniedException ex) {
+            ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+            return ResponseEntity
+                    .status(errorCode.getHttpStatus().value())
+                    .body(ApiResponse
+                            .builder()
+                            .status(errorCode.getHttpStatus().value())
+                            .message(errorCode.getMessage())
+                            .build()
+                    );
+        }
+
+
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiResponse<Object>> handleResponseStatusException(ResponseStatusException ex) {
         ApiResponse<Object> res = ApiResponse.builder()
@@ -93,11 +111,11 @@ public class GlobalExceptionHandler {
                 .toList();
 
         ApiErrorResponse response = ApiErrorResponse.builder()
-                .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
                 .errors(errors)
                 .build();
 
-        return ResponseEntity.unprocessableContent().body(response);
+        return ResponseEntity.unprocessableEntity().body(response);
     }
 
 }

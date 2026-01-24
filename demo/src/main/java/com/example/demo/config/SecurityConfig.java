@@ -1,9 +1,11 @@
 package com.example.demo.config;
 
+import com.example.demo.enums.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,6 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {"/auth/login", "/auth/register"};
@@ -36,7 +39,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users").hasAuthority("ROLE_ADMIN") // allows admin to access /users endpoint
+//                        .requestMatchers(HttpMethod.GET, "/users")
+                        //.hasAuthority("ROLE_ADMIN") // allows admin to access /users endpoint
+//                        .hasRole(Role.ADMIN.name())
+
+//                        assigning permission in securityFilterChain is not popular,
+//                        use @PreAuthorize for service instead
                         .anyRequest()
                         .authenticated()
                 )

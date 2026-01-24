@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.req.UserUpdateReqDTO;
-import com.example.demo.dto.req.user;
+import com.example.demo.dto.req.user.UserReqDTO;
+import com.example.demo.dto.req.user.UserUpdateReqDTO;
 import com.example.demo.dto.res.user.UserResponse;
 import com.example.demo.entity.User;
 import com.example.demo.enums.Role;
@@ -10,6 +10,8 @@ import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserResponse create(user.UserReqDTO req) {
+    public UserResponse create(UserReqDTO req) {
         if(userRepository.existsByUsername(req.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
@@ -48,6 +50,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<UserResponse> getUsers() {
         return userRepository.findAll().stream().map(userMapper::toResponseDTO).toList();
@@ -56,6 +59,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUser(UUID userId) {
         return userMapper.toResponseDTO(getUserById(userId));
+    }
+
+    @Override
+    public UserResponse getMe() {
+        var context = SecurityContextHolder.getContext();
+        String name =  context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        return userMapper.toResponseDTO(user);
     }
 
     @Override

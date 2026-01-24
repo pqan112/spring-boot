@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.req.UserUpdateReqDTO;
-import com.example.demo.dto.req.user;
+import com.example.demo.dto.req.user.UserReqDTO;
+import com.example.demo.dto.req.user.UserUpdateReqDTO;
 import com.example.demo.dto.res.ApiResponse;
 import com.example.demo.dto.res.user.UserResponse;
-import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ApiResponse<UserResponse> createUser(@RequestBody @Valid user.UserReqDTO req) {
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserReqDTO req) {
         return ApiResponse.<UserResponse>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("message.user_create_success")
@@ -46,6 +45,15 @@ public class UserController {
                 .status(HttpStatus.OK.value())
                 .data(userService.getUsers())
                 .message("message.get_users_success")
+                .build();
+    }
+
+    @GetMapping("/me")
+    ApiResponse<UserResponse> getMe(){
+        return ApiResponse.<UserResponse>builder()
+                .status(HttpStatus.OK.value())
+                .data(userService.getMe())
+                .message("message.get_me_success")
                 .build();
     }
 
