@@ -49,10 +49,11 @@ public class SecurityConfig {
                         .authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwtConfigurer ->  jwtConfigurer
-                                .decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        )
+                        oauth2.jwt(jwtConfigurer ->
+                                jwtConfigurer
+                                    .decoder(jwtDecoder())
+                                    .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .csrf(AbstractHttpConfigurer::disable);
 

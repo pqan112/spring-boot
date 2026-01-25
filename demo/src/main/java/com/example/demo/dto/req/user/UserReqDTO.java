@@ -1,5 +1,6 @@
 package com.example.demo.dto.req.user;
 
+import com.example.demo.entity.Role;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +17,5 @@ public class UserReqDTO {
     private String firstName;
     private String lastName;
     private LocalDate dob;
-    Set<String> roles;
+//    Set<Role> roles;
 }

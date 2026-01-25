@@ -11,7 +11,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -22,5 +21,7 @@ public class User {
      String username;
      String password;
      LocalDate dob;
-     Set<String> roles;
+
+    @ManyToMany
+     Set<Role> roles;
 }

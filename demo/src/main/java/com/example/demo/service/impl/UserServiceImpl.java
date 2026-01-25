@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(req.getPassword()));
 
         HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        user.setRoles(roles);
+//        roles.add(Role.USER.name());
+//        user.setRoles(roles);
 
         User savedUser = userRepository.save(user);
         return userMapper.toResponseDTO(savedUser);
