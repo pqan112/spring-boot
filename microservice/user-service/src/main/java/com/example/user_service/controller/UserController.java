@@ -1,0 +1,43 @@
+package com.example.user_service.controller;
+
+
+import com.example.user_service.dto.ApiResponse;
+import com.example.user_service.entity.User;
+import com.example.user_service.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Slf4j
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    private final UserService userService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<User> createUser(@RequestBody User user) {
+        log.info("createUser");
+        return ApiResponse.<User>builder()
+                .success(true)
+                .message("message.create_user_success")
+                .status(HttpStatus.CREATED.value())
+                .data(userService.createUser(user))
+                .build();
+    }
+
+    @GetMapping
+    public ApiResponse<List<User>> getAllUsers() {
+        log.info("getAllUsers");
+        return ApiResponse.<List<User>>builder()
+                .success(true)
+                .message("message.get_users_success")
+                .status(HttpStatus.OK.value())
+                .data(userService.getAllUsers())
+                .build();
+    }
+}
