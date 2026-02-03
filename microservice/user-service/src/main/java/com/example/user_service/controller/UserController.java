@@ -1,8 +1,13 @@
 package com.example.user_service.controller;
 
 
+import com.example.user_service.client.OrderClient;
 import com.example.user_service.dto.ApiResponse;
+import com.example.user_service.dto.OrderDto;
+import com.example.user_service.dto.UserDto;
+import com.example.user_service.dto.UserResponseWithOrders;
 import com.example.user_service.entity.User;
+import com.example.user_service.repository.UserRepo;
 import com.example.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +22,8 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final UserRepo userRepo;
+    private final OrderClient orderClient;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,5 +46,33 @@ public class UserController {
                 .status(HttpStatus.OK.value())
                 .data(userService.getAllUsers())
                 .build();
+    }
+
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable("id") Long id) {
+        User user = userRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("user not found"));
+        return UserDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .build();
+    }
+
+    @GetMapping("/{id}/with-orders")
+    public UserResponseWithOrders getUserWithOrders(@PathVariable("id") Long id) {
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+
+        UserDto userDto = UserDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .build();
+
+        List<OrderDto> orders = orderClient.getOrdersByUserId(id);
+
+        return new UserResponseWithOrders(userDto.getId(), userDto.getName(), userDto.getEmail(), orders);
     }
 }
