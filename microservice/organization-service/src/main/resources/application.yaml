@@ -1,9 +1,9 @@
-server:
-  port: 8082
-
 spring:
   application:
-    name: user-service
+    name: organization-service
+
+server:
+  port: 8084
 
   datasource:
     url: jdbc:h2:mem:userdb
@@ -24,14 +24,6 @@ spring:
       resource-server:
         jwt:
           issuer-uri: http://localhost:8080/realms/demo-realm
-
-keycloak:
-  realm: demo-realm
-  server-url: http://localhost:8080
-  admin:
-    client-id: user-service
-    client-secret: user-service-secret
-
 
 eureka:
   instance:

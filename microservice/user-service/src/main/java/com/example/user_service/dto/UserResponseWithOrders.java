@@ -13,7 +13,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponseWithOrders {
     Long id;
-    String name;
+    String username;
     String email;
     List<OrderDto> orders;
 }

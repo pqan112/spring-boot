@@ -2,10 +2,7 @@ package com.example.user_service.controller;
 
 
 import com.example.user_service.client.OrderClient;
-import com.example.user_service.dto.ApiResponse;
-import com.example.user_service.dto.OrderDto;
-import com.example.user_service.dto.UserDto;
-import com.example.user_service.dto.UserResponseWithOrders;
+import com.example.user_service.dto.*;
 import com.example.user_service.entity.User;
 import com.example.user_service.repository.UserRepo;
 import com.example.user_service.service.UserService;
@@ -27,13 +24,13 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<User> createUser(@RequestBody User user) {
+    public ApiResponse<User> createUser(@RequestBody CreateUserDto dto) {
         log.info("createUser");
         return ApiResponse.<User>builder()
                 .success(true)
                 .message("message.create_user_success")
                 .status(HttpStatus.CREATED.value())
-                .data(userService.createUser(user))
+                .data(userService.createUser(dto))
                 .build();
     }
 
@@ -56,7 +53,6 @@ public class UserController {
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .name(user.getName())
                 .build();
     }
 
@@ -68,11 +64,11 @@ public class UserController {
         UserDto userDto = UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .name(user.getName())
+                .username(user.getUsername())
                 .build();
 
         List<OrderDto> orders = orderClient.getOrdersByUserId(id);
 
-        return new UserResponseWithOrders(userDto.getId(), userDto.getName(), userDto.getEmail(), orders);
+        return new UserResponseWithOrders(userDto.getId(), userDto.getUsername(), userDto.getEmail(), orders);
     }
 }
