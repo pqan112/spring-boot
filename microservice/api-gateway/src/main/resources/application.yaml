@@ -20,6 +20,11 @@ spring:
               predicates:
                 - Path=/api/orders/**
 
+            - id: organization-service
+              uri: lb://organization-service
+              predicates:
+                - Path=/api/departments/**,/api/employees/**
+
 eureka:
   instance:
     prefer-ip-address: true

@@ -1,4 +1,4 @@
-package com.example.organization_service.dto;
+package com.example.organization_service.dto.request;
 
 import lombok.*;
 

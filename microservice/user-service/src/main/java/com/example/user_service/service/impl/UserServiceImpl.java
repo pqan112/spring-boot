@@ -1,6 +1,7 @@
 package com.example.user_service.service.impl;
 
 import com.example.user_service.dto.CreateUserDto;
+import com.example.user_service.dto.UserResponse;
 import com.example.user_service.entity.User;
 import com.example.user_service.repository.UserRepo;
 import com.example.user_service.service.KeycloakService;
@@ -35,7 +36,11 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll();
     }
 
-
+    @Override
+    public UserResponse getUserByKeycloakId(String keycloakId) {
+        User user = userRepo.findByKeycloakId();
+        
+    }
 
 
 }

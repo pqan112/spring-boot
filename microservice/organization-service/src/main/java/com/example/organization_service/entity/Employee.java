@@ -20,6 +20,9 @@ public class Employee {
     @Column(nullable = false)
     String name;
 
+    @Column(nullable = false)
+    Long userId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
     Department department;
