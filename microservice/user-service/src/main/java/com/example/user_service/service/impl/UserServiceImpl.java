@@ -38,8 +38,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserByKeycloakId(String keycloakId) {
-        User user = userRepo.findByKeycloakId();
-        
+        User user = userRepo.findByKeycloakId(keycloakId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with ID: " + keycloakId));
+        return UserResponse
+                .builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .name(user.getUsername())
+                .build();
     }
 
 
