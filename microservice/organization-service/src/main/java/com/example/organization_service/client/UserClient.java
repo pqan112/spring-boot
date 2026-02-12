@@ -11,4 +11,7 @@ public interface UserClient {
 
     @GetMapping("/api/users/keycloak/{sub}")
     UserResponse getUserByKeycloakId(@PathVariable("sub") String keycloakId);
+
+    @GetMapping("/api/users/{id}")
+    UserResponse getUserById(@PathVariable("id") Long id);
 }

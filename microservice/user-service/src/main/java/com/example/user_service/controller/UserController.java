@@ -47,12 +47,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable("id") Long id) {
+    public UserResponse getUserById(@PathVariable("id") Long id) {
         User user = userRepo.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("user not found"));
-        return UserDto.builder()
+        return UserResponse.builder()
                 .id(user.getId())
+                .name(user.getUsername())
                 .email(user.getEmail())
                 .build();
     }
