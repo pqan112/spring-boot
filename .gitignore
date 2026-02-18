@@ -1,0 +1,32 @@
+# Java
+*.class
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.next
+pom.xml.bak
+pom.xml.versions
+pom.xml.releaseBackup
+# Also ignore all individual packaged artifacts, although the 'target/' rule should cover these in a standard setup
+*.jar
+*.war
+*.ear
+
+# Gradle (uncomment if using Gradle)
+# .gradle/
+# build/
+# *.iml
+
+# IDEs and other generated files
+.idea/         # IntelliJ IDEA project files
+.project       # Eclipse project files
+.classpath     # Eclipse classpath files
+.settings/     # Eclipse settings folder
+.vscode/       # VS Code configuration files
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
