@@ -1,0 +1,19 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: inventory-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/v1/inventory/**
+
+        - id: booking-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/v1/booking

@@ -43,6 +43,7 @@
 		<module>inventory-service</module>
 		<module>booking-service</module>
 		<module>order-service</module>
+		<module>api-gateway</module>
 	</modules>
 
 	<build>
