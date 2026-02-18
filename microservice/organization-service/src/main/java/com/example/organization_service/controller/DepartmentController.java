@@ -2,6 +2,7 @@ package com.example.organization_service.controller;
 
 import com.example.organization_service.dto.request.CreateDepartmentDto;
 import com.example.organization_service.dto.response.DepartmentResponse;
+import com.example.organization_service.dto.response.EmployeeResponse;
 import com.example.organization_service.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,11 @@ public class DepartmentController {
 
     @GetMapping
     public ResponseEntity<List<DepartmentResponse>> getAllDepartments() {
-        return ResponseEntity.ok().body(departmentService.getDepartments()) ;
+        return ResponseEntity.ok().body(departmentService.getDepartments());
+    }
+
+    @GetMapping("/{id}/employees")
+    public ResponseEntity<List<EmployeeResponse>> getEmployeesByDepartmentId(@PathVariable Long id) {
+        return ResponseEntity.ok(departmentService.getEmployeesByDepartmentId(id));
     }
 }
