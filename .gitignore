@@ -30,3 +30,6 @@ pom.xml.releaseBackup
 
 # Windows
 Thumbs.db
+
+local-setup/docker/keycloak/
+local-setup/volume-data/

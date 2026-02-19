@@ -31,6 +31,7 @@ public class InventoryServiceImpl implements InventoryService {
                 .name(evt.getName())
                 .capacity(evt.getLeftCapacity())
                 .venue(evt.getVenue())
+                .ticketPrice(evt.getTicketPrice())
                 .build())
                 .toList();
     }

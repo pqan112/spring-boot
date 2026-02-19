@@ -11,6 +11,7 @@ import com.example.booking_service.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.retry.annotation.CircuitBreaker;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
