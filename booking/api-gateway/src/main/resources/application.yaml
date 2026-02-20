@@ -14,12 +14,25 @@ spring:
               uri: http://localhost:8080
               predicates:
                 - Path=/api/v1/inventory/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: inventoryCircuit
+                    fallbackUri: forward:/fallback/inventory
+                    statusCodes:
+                      - 500
 
             - id: booking-service
               uri: http://localhost:8081
               predicates:
                 - Path=/api/v1/booking
-
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    id: bookingCircuit
+                    fallbackUri: forward:/fallback/booking
+                    statusCodes:
+                      - 500
 
   security:
     oauth2:
@@ -42,10 +55,16 @@ management:
   endpoints:
     web:
       exposure:
-        include: *
+        include: "*"
 
 resilience4j:
   circuitbreaker:
+    # instances
+    instances:
+      inventoryCircuit:
+        base-config: default
+      bookingCircuit:
+        base-config: default
     configs:
       default:
         register-health-indicator: true
@@ -66,3 +85,7 @@ resilience4j:
         max-attempts: 3
         wait-duration: 2s
 
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    io.github.resilience4j: DEBUG
